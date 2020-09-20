@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
+	"github.com/adrg/xdg"
 	"github.com/lucasjones/reggen"
 	"io"
 	"io/ioutil"
@@ -25,6 +27,13 @@ type ApiResponse struct {
 func main() {
 	local, dir := ParseFlags()
 	FileName := ""
+
+	// Check that the directory exists. If not, create it
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		fmt.Println("Directory "+dir+" not found. Creating it.")
+		os.Mkdir(dir, os.ModeDir)
+	}
+
 	if local {
 		FileName = SelectLocal(dir)
 	} else {
@@ -37,7 +46,7 @@ func ParseFlags() (bool, string) {
 	var LocalSet bool
 	var Directory string
 	flag.BoolVar(&LocalSet, "l", false, "Dont download a new wallpaper but set one already downloaded.")
-	flag.StringVar(&Directory, "d", "/home/jonas/Pictures/script_wallpapers/", "Chose a different directory for downloading to or selecting from.")
+	flag.StringVar(&Directory, "d", xdg.UserDirs.Pictures+"/script_wallpapers/", "Chose a different directory for downloading to or selecting from. Defaults to script_wallpapers in the users pictures folder.")
 	flag.Parse()
 	return LocalSet, Directory
 }
@@ -87,7 +96,7 @@ func DownloadRandomImage(directory string) string {
 		Splits := strings.Split(ImageUrl, "/")
 		FileName = Splits[len(Splits)-1]
 
-		// Download image to /home/jonas/Pictures/script_wallpapers/
+		// Download image to directory
 		DownloadFile(ImageUrl, directory+FileName)
 	}
 
