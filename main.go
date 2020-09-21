@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/adrg/xdg"
 	"github.com/lucasjones/reggen"
+	"github.com/reujab/wallpaper"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -65,7 +66,7 @@ func SelectLocal(directory string) string {
 }
 
 func SetWallpaper(filename string) {
-
+	wallpaper.SetFromFile(filename)
 }
 
 func DownloadRandomImage(directory string) string {
